@@ -1,9 +1,9 @@
-"""Cells of MindFlow Step 7b (pruning)."""
+"""Cells of MindFlow Step 7c (pruning)."""
 from cells import code, header, md, setup
 
 
 def pruning_cells():
-    c = [header("7b", "Pruning", "Step 7a keeps the network and changes the number format. How much of the network "
+    c = [header("7c", "Pruning", "Step 7a keeps the network and changes the number format. How much of the network "
                 "itself can be removed (weights, channels, attention heads, tokens) before validation AUC falls, and "
                 "what does each kind of pruning save in parameters, MACs, file size and latency?", """
 **Run this after Step 6b (final model), Step 4a and Step 3a**: their trained networks are loaded from their best
@@ -18,6 +18,10 @@ checkpoints and scored on their own validation rows (2023). The test years are n
 **Why two CNNs.** In Step 4a the 38 numbers alone (a 6,786-parameter MLP) reached the hybrid CNN's AUC at 5 minutes,
 so the final model can lose most of its CNN without losing AUC. The image-only CNN shows what pruning costs when the
 picture is the only input; the features-only score is drawn as the floor of the final model.
+
+**Next to Step 7b (distillation).** `keep = 0.25` leaves channels 16-32-64 in the final CNN (86,020 parameters), the
+architecture of Step 7b's `small_*` students: the same small network is reached here by pruning and fine-tuning,
+there by training it on the labels or on the teacher's probabilities.
 
 **Rules.** Pruning decisions use weights or *training* windows only (sensitivity scans, Taylor and head-importance
 scores). Every pruned network is fine-tuned with its source run's rule (same optimizer and learning rates, early
@@ -88,7 +92,7 @@ if SMOKE:
     BENCH.update(gpu_batches=[1, 8], cpu_batches=[1, 8], reps=3, calibration_windows=32, calib_batch=16, cpu_every_kth_day=1,
                  cpu_max_rows=200)
     STATS.update(n_boot=30)
-RUN_ID, RUN_DIR, RESUME = mf.new_run(HERE, "7b", RUN_ID, "pruning", LOCAL_TEST)
+RUN_ID, RUN_DIR, RESUME = mf.new_run(HERE, "7c", RUN_ID, "pruning", LOCAL_TEST)
 mf.save_settings(RUN_DIR, RESUME, cnn_sources=CNN_SOURCES, vit_source=VIT_SOURCE, rows=ROWS, finetune=FINETUNE,
                  unstructured=UNSTRUCTURED, structured=STRUCTURED, scan=SCAN, vit=VIT, bench=BENCH, stats=STATS, quick=QUICK,
                  pruning=pr.__version__, efficiency=ef.__version__, torch=torch.__version__,
@@ -399,7 +403,7 @@ for a in ax:
     a.legend(fontsize=7)
 fig.tight_layout(); fig.savefig(RUN_DIR / "pruning.png", dpi=130); plt.show()
 """), code("""
-lines = [f"# Step 7b: pruning (run {RUN_ID}{', QUICK' if QUICK else ''})", ""]
+lines = [f"# Step 7c: pruning (run {RUN_ID}{', QUICK' if QUICK else ''})", ""]
 for source, d in SUMMARY.groupby("source", sort=False):
     b = d[d.family == "reference"].iloc[0]
     lines.append(f"- **{source}** ({b.model}): AUC {b.auc:.4f} on {b.auc_rows:,} rows / {b.days} days; {b.parameters:,} parameters, "

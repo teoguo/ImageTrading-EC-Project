@@ -56,7 +56,7 @@ def sync_code(home):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("home", type=Path)
-    p.add_argument("notebook", help="name in MindFlow/, e.g. Step7b_Pruning")
+    p.add_argument("notebook", help="name in MindFlow/, e.g. Step7c_Pruning")
     p.add_argument("--local", type=Path)
     p.add_argument("--set", action="append", default=[], metavar="NAME=VALUE")
     p.add_argument("--out", type=Path)

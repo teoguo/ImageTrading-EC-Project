@@ -17,7 +17,8 @@ identical rows for every model. Every model reports its parameter count (HGB: tr
 | 5 | One figure, one parameter table | `Step5_Summary` | reads every step's newest run |
 | 6a | Does market-regime information (VIX, multi-day realized vol, VIXY) help HGB? | `Step6a_VIX_Regime` | HGB with and without regime features, same rows |
 | 7a | Efficient computing for the final model (run after it is chosen) | `Step7a_Efficient_Computing` | float32 / bfloat16 GPU and INT8 CPU inference (static PTQ for CNNs, dynamic for ViTs): AUC, size, latency, memory; DINOv2 ViT-S/14 + LoRA vs full fine-tune, frozen and scratch ViT: trainable parameters, memory, time, AUC |
-| 7b | How much of the network itself can be removed? (run after 6b, 4a and 3a) | `Step7b_Pruning` | final hybrid CNN and image-only CNN: magnitude pruning (one-shot and fine-tuned) and channel pruning (L2 / Taylor ranking, rebuilt narrower, fine-tuned, vs trained from scratch, + INT8); scratch ViT: head and token pruning. AUC (paired by day), parameters, non-zero parameters, MACs, compression ratio, size, latency |
+| 7b | How small can the model with the picture be, and does distillation help? (run after 6b) | `Step7b_Distillation` | students taught by the final CNN: CNN 16-32-64 on the full and on the half-height chart, features-only MLP; labels vs teacher, paired by day; parameters, size, latency |
+| 7c | How much of the network itself can be removed? (run after 6b, 4a and 3a) | `Step7c_Pruning` | final hybrid CNN and image-only CNN: magnitude pruning (one-shot and fine-tuned) and channel pruning (L2 / Taylor ranking, rebuilt narrower, fine-tuned, vs trained from scratch, + INT8); scratch ViT: head and token pruning. AUC (paired by day), parameters, non-zero parameters, MACs, compression ratio, size, latency |
 
 ## Running on Colab
 
@@ -35,7 +36,7 @@ identical rows for every model. Every model reports its parameter count (HGB: tr
 
 ```
 pip install torch numpy pandas pyarrow scikit-learn scipy matplotlib nbformat nbclient ipykernel   # + transformers for 7a
-CUDA_VISIBLE_DEVICES=0 python MindFlow/tools/run_notebook.py <home> Step7b_Pruning --set QUICK=True
+CUDA_VISIBLE_DEVICES=0 python MindFlow/tools/run_notebook.py <home> Step7c_Pruning --set QUICK=True
 ```
 
 `<home>` stands in for the Drive folder: it holds `alldata_bundle_v4.zip` and `runs/` (copy the runs of the earlier

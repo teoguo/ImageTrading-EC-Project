@@ -1,4 +1,4 @@
-"""Step 7b: pruning the final models.
+"""Step 7c: pruning the final models.
 
 Step 7a keeps the network and changes the number format (bfloat16, INT8). This step removes parts of the network:
 
