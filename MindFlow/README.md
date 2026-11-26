@@ -29,6 +29,22 @@ identical rows for every model. Every model reports its parameter count (HGB: tr
    printed id. Notebooks in one runtime share the unpacked bundle.
 4. The held-out test section of each notebook is run once, at the end (`RUN_TEST = True`).
 
+## Running outside Colab (HPC node, lab workstation)
+
+`tools/run_notebook.py` executes one notebook on real data without a browser and echoes its output:
+
+```
+pip install torch numpy pandas pyarrow scikit-learn scipy matplotlib nbformat nbclient ipykernel   # + transformers for 7a
+CUDA_VISIBLE_DEVICES=0 python MindFlow/tools/run_notebook.py <home> Step7b_Pruning --set QUICK=True
+```
+
+`<home>` stands in for the Drive folder: it holds `alldata_bundle_v4.zip` and `runs/` (copy the runs of the earlier
+steps the notebook reads, e.g. `runs/step6b_final_model/<RUN_ID>/` with its checkpoints). The checkout's `code/` is
+copied to `<home>/code`; the bundle is unpacked to `--local` (default `<home>/_local`, about 5 GB); the executed
+notebook is saved in `<home>/executed/`, also when a cell fails. `--set NAME=VALUE` replaces a one-line setting
+(`QUICK`, `RUN_ID`, `WORKERS`, ...); to resume, pass `--set 'RUN_ID="<printed id>"'`. Download the bundle and the
+runs before asking for a GPU.
+
 ## Code (`code/`)
 
 - `chartcnn/` 5-minute data, labels, image/1D CNNs, T2T-style ViT, HGB baselines, the horizon × target grid

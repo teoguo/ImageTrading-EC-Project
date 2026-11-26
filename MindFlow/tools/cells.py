@@ -52,12 +52,13 @@ def setup(imports, gpu=True):
 ## 1. Setup
 Put `alldata_bundle_v4.zip` and the `code/` folder in `Demo/MindFlow` on Drive. The bundle (1.3 GB) is copied to the
 Colab disk and unzipped once per runtime; the next notebook in the same runtime reuses it.
+Outside Colab (HPC, a workstation) run the notebook with `python MindFlow/tools/run_notebook.py` (see the README).
 """), code(f"""
 import os, sys, json, shutil, time
 from pathlib import Path
 
 LOCAL_TEST = os.environ.get("MINDFLOW_LOCAL_TEST") == "1"          # repository QA only (synthetic data)
-if LOCAL_TEST:
+if LOCAL_TEST or "MINDFLOW_HERE" in os.environ:                    # MINDFLOW_HERE alone: a real run outside Colab (tools/run_notebook.py)
     HERE, LOCAL_ROOT = Path(os.environ["MINDFLOW_HERE"]), Path(os.environ["MINDFLOW_LOCAL"])
 else:
     from google.colab import drive
